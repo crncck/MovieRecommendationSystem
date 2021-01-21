@@ -177,3 +177,145 @@ def contentBasedRecommender(movie_name):
 movie_name = "Fargo (1996)"
 print("20 similar movies to ", movie_name, ": \n")
 print(contentBasedRecommender(movie_name))
+
+
+print("\n\n-------------------------------------------------------------------------------------------")
+
+
+print("                              --- COLLABORATIVE FILTERING with KNN ---                       ")
+
+
+
+                                    # User Based Collaborative Filtering With KNN #
+
+# Use sparse matrix to use movieId as rows and userID as columns, and show user ratings for each movie
+movie_users = drop_users.pivot(index='movieId', columns='userId', values='rating')
+
+# Replace null values (NaN) with 0
+movie_users = movie_users.fillna(0.0)
+
+# Convert to compressed sparse row matrix with csr_matrixmethod
+matrix_movie_users = csr_matrix(movie_users.values)
+
+# Use KNN algorithm to train data, and cosine similarity as a distance metric.
+knn_model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=25)
+
+knn_model.fit(matrix_movie_users)
+
+
+# Our recommender function will get name of the movie from the user and show 15 neasert neighbors which has least distance.
+# We used fuzzywuzzy library for string matching to get better results if user types wrong characters.
+# We turn all 15 neighbor's indices and get their titles and show them to user.
+# The first index in neighbors is the movie itself and we do not print it.
+
+def movieRecommender(movie_name, data, model, n_recommendations):
+    model.fit(data)
+    index = process.extractOne(movie_name, movies['title'])[2]
+    print('Selected movie is: ', movies['title'][index])
+    print('\nRecommendations are:\n')
+    distances, indices = model.kneighbors(data[index], n_neighbors=n_recommendations)
+    for i in indices[0]:
+        if i != index:
+            print(movies['title'][i])
+
+
+movie_name = "toy story"
+movieRecommender(movie_name, matrix_movie_users, knn_model, 15 + 1)
+
+
+
+
+
+print("\n\n-------------------------------------------------------------------------------------------")
+
+
+print("                              --- MATRIX FACTORIZATION BASED COLLABORATIVE FILTERING WITH SVD METHOD ---                       ")
+                        # Matrix Factorization Based Collaborative Filtering with SVD Method #
+
+# Matrix factorization is another class of collaborative filtering algorithms used in recommender systems.
+# We will use Singular Value Decomposition method to implement it.
+
+# Data Preprocessing
+
+data = ratings.drop('timestamp', axis=1)
+
+
+# Check for null values
+data.isna().sum()
+
+data.shape
+
+# Check for unique number of movies and users
+movie = data['movieId'].nunique()
+users = data['userId'].nunique()
+print('Number of movies =', movie)
+print('Number of users =', users, "\n\n")
+
+# We can see distribution of ratings below (how many times a rating value is given)
+data['rating'].value_counts().plot(kind='bar', colormap='terrain')
+plt.show(block=False)
+plt.savefig('ratingDistribution3.png')
+plt.close()
+
+
+# To get more accurate results, we will only use movies and users which have been rated more than 20 times
+filtered_movies = data['movieId'].value_counts() > 20
+filtered_movies = filtered_movies[filtered_movies].index.tolist()
+
+filtered_users = data['userId'].value_counts() > 20
+filtered_users = filtered_users[filtered_users].index.tolist()
+
+# Now we have filtered users and movies as a list, and we will only use those values on our dataframe
+data = data[(data['movieId'].isin(filtered_movies)) & (data['userId'].isin(filtered_users))]
+
+
+# Now we do not have duplicate data and our data contains 66,405 rows (34,431 rows are removed).
+
+
+# The Reader class is used to parse a file containing ratings.
+reader = Reader(rating_scale=(0.5, 5))
+
+# First create dataset from dataframe. Then create train and test set.
+columns = ['userId', 'movieId', 'rating']
+dataset = Dataset.load_from_df(data[columns], reader)
+
+trainset = dataset.build_full_trainset()
+testset = trainset.build_anti_testset()
+
+
+# Use SVD method
+model = SVD(n_epochs=25, verbose=True)
+
+cross_validate(model, dataset, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+print('Training Done\n\n')
+
+
+
+# Now we can predict
+prediction = model.test(testset)
+
+print("\n         TOP 5 MOVIE RECOMMENDATIONS FOR EACH USER            \n")
+
+# We will define a function to recommend movies based on prediction for each user.
+def get_Recommendations(prediction, n):
+    top_n = defaultdict(list)
+    for uid, iid, true_r, est, _ in prediction:
+        top_n[uid].append((iid, est))
+
+    for uid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+
+    return top_n
+
+
+top_n = get_Recommendations(prediction, n=5)
+for uid, user_ratings in top_n.items():
+    movie_id = []
+    print("Recommendations for User {}:".format(uid))
+    for (iid, ratings) in user_ratings:
+        print("\t", movies[movies.movieId == iid]["title"].values[0])
+    print("\n")
+
+print("\n         WE MADE 5 MOVIE RECOMMENDATIONS FOR EACH USER WITH MATRIX FACTORIZATION METHOD         \n")
+

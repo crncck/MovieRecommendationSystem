@@ -4,8 +4,7 @@
 
 Movie recommender that recommends movies with Content-based Filtering and Collaborative Filtering. This repository contains collaborative filtering implemented with both K Nearest Neighbours algorithm and matrix factorization using Singular Value Decomposition and content-based filtering. We also made a basic GUI for a small dataset using content-based filtering.
 
-
-
+<br />
 
 ### Team & Roles
 
@@ -14,7 +13,7 @@ Movie recommender that recommends movies with Content-based Filtering and Collab
 **Ayşe Ceren Çiçek** - Collaborative filtering with KNN and matrix factorization
 
 
-
+<br />
 
 ### Structure
 
@@ -44,27 +43,27 @@ Movie recommender that recommends movies with Content-based Filtering and Collab
 
 ​└── figures
 
-
+<br />
 
 
 ### Language & version
 
 Python 2.7.16
 
-
+<br />
 
 ### Main File
 
 `recommendation.py`
 
-
+<br />
 
 ### Datasets
 
 - MovieLens 100K Dataset by [GroupLens](https://grouplens.org/datasets/movielens/)
 - IMDB Movie Dataset downloaded from [data.world](https://data.world/login?next=%2Fhiman%2Fimdb-movie-dataset%2Fworkspace%2Ffile%3Ffilename%3Dmovie_data.csv)
 
-
+<br />
 
 ### Additional
 

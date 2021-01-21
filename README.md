@@ -61,8 +61,8 @@ Python 2.7.16
 
 ### Datasets
 
-- MovieLens 100K Dataset by [GroupLens][https://grouplens.org/datasets/movielens/]
-- IMDB Movie Dataset downloaded from [data.world][https://data.world/login?next=%2Fhiman%2Fimdb-movie-dataset%2Fworkspace%2Ffile%3Ffilename%3Dmovie_data.csv]
+- MovieLens 100K Dataset by [GroupLens](https://grouplens.org/datasets/movielens/)
+- IMDB Movie Dataset downloaded from [data.world](https://data.world/login?next=%2Fhiman%2Fimdb-movie-dataset%2Fworkspace%2Ffile%3Ffilename%3Dmovie_data.csv)
 
 
 

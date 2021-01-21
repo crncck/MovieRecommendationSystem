@@ -29,7 +29,11 @@ Movie recommender that recommends movies with Content-based Filtering and Collab
 
 ​	│      └── `ratings.csv`
 
+​	│── figures
+
 ​	│── `README.md`
+
+​	│── `Report.tex`
 
 ​	│── `gui.py`
 
@@ -37,11 +41,7 @@ Movie recommender that recommends movies with Content-based Filtering and Collab
 
 ​	│── `recommendation.py`
 
-​	│──  `requirement.txt`
-
-​	│── `Report.tex`
-
-​└── figures
+​└── `requirement.txt`
 
 <br />
 

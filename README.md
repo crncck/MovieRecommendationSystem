@@ -54,7 +54,7 @@ Python 2.7.16
 
 ### Main File
 
-`recommendation.py`
+`movie_recommendation_notebook.ipynb` & `recommendation.py`  
 
 <br />
 
